@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    entrypoint: ["./.docker/entrypoint.sh"]
+    container_name: app
+    restart: always
+    ports:
+      - "3050:3050"
+      
+    depends_on:
+      - db_test
+    env_file:
+      - .env
+    networks:
+      - mysql-compose-network
+    user: "node"
+
+  db_test:
+    image: mysql:8.0
+    container_name: db-test
+    environment:
+      MYSQL_ROOT_PASSWORD: testDb23root
+      MYSQL_DATABASE: test_db
+      MYSQL_USER: test_user
+      MYSQL_PASSWORD: test_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - .docker/dbdatatest:/var/lib/mysql
+    networks:
+      - mysql-compose-network
+    logging:
+      driver: "none"
+
+networks:
+  mysql-compose-network:
+    driver: bridge
