@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import config from 'helpers/db/config';
 import { Sequelize } from 'sequelize-typescript';
+import config from 'config/db/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

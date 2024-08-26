@@ -1,10 +1,11 @@
+import config from 'config/db/config';
 import { Inject, Injectable } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { createHash } from 'crypto';
 import { JwtService } from '@nestjs/jwt';
 import { UserEntity } from 'src/user/user.entity';
-import config from 'helpers/db/config';
 import { CreateUserDto, UserDataForTokenDto } from 'helpers/dto/user.dto';
+import { PROVIDERS } from 'config/providers';
 
 @Injectable()
 export class Tokengenerate {
@@ -42,7 +43,7 @@ export class Tokengenerate {
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject('USER_REPOSITORY')
+    @Inject(PROVIDERS.USER_REPOSITORY)
     private userRepo: typeof UserEntity,
 
     private readonly tokenGenerate: Tokengenerate,
@@ -51,7 +52,7 @@ export class AuthService {
 
   async createUser(body: CreateUserDto) {
     try {
-      await this.userService.emailExist(body.email);
+      await this.userService.validateEmail(body.email, false);
 
       const generatePass = this.createHashForPass(body.password);
       return await this.userRepo.create({
@@ -80,7 +81,7 @@ export class AuthService {
     let compare: boolean;
 
     try {
-      user = await this.userService.findByEmail(email);
+      user = await this.userService.validateEmail(email, true);
       const passForCompare = this.createHashForPass(password);
       compare = passForCompare === user.password;
 

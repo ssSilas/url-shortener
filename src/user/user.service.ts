@@ -19,36 +19,27 @@ export class UserService {
     });
   }
 
-  async findByEmail(email: string) {
+  async validateEmail(email: string, shouldExist: boolean) {
     try {
       const user = await this.userRepo.findOne({
         raw: true,
         attributes: ['id', 'email', 'password'],
         where: { email },
       });
-      if (!user) {
+
+      if (shouldExist && !user) {
         throw new UnauthorizedException(
-          'O usuario não existe, favor informar um usuário válido',
+          'O usuário não existe. Por favor, insira um usuário válido',
         );
       }
-      return user;
-    } catch (error) {
-      throw error;
-    }
-  }
 
-  async emailExist(email: string) {
-    try {
-      const validation = await this.userRepo.findOne({
-        attributes: ['id', 'email', 'password'],
-        where: { email },
-      });
-
-      if (validation) {
+      if (!shouldExist && user) {
         throw new BadRequestException(
-          'O email já é utilizado, favor informar um email válido',
+          'O e-mail informado já está em uso. Por favor, insira um e-mail válido.',
         );
       }
+
+      return user;
     } catch (error) {
       throw error;
     }

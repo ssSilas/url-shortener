@@ -1,6 +1,6 @@
+import config from 'config/db/config';
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import config from 'helpers/db/config';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
 @Injectable()

@@ -1,4 +1,5 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
+import { UrlShortenerEntity } from 'src/url-shortener/url-shortener.entity';
 
 @Table({
   tableName: 'user',
@@ -13,16 +14,16 @@ export class UserEntity extends Model {
   })
   id: number;
 
-  @Column({ allowNull: false })
+  @Column({ allowNull: false, type: DataType.STRING })
   name: string;
 
-  @Column({ allowNull: false })
+  @Column({ allowNull: false, type: DataType.STRING })
   email: string;
 
-  @Column({ allowNull: false })
+  @Column({ allowNull: false, type: DataType.STRING })
   password: string;
 
-  @Column({ allowNull: false })
+  @Column({ allowNull: false, type: DataType.INTEGER })
   status: number;
 
   @Column({ allowNull: false, type: DataType.DATE })
@@ -33,4 +34,7 @@ export class UserEntity extends Model {
 
   @Column({ allowNull: true, type: DataType.DATE })
   deletedAt: Date;
+
+  @HasMany(() => UrlShortenerEntity)
+  urlShorteners: UrlShortenerEntity[];
 }

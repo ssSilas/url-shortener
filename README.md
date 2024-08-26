@@ -1,73 +1,117 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# .ENV
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Para executar o seu projeto rapidamente, utilize a .env de desenvolvimento com o nome ".env_development". Para utiliza-la no projeto, renomeie o arquivo para ".env".
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+# Docker
 
-## Description
+Para configurar e iniciar a aplicação utilizando Docker, siga os passos abaixo:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
+## 1. Ajustando Permissões
+Antes de subir os contêineres, é importante garantir que você tenha as permissões corretas para manipular os arquivos e scripts do Docker. Execute os seguintes comandos:
 
 ```bash
-$ yarn install
+sudo chown -R $USER:$USER .docker
+chmod +x .docker/entrypoint.sh
 ```
 
-## Running the app
+- **sudo chown -R $USER:$USER .docker**: Este comando altera o proprietário e o grupo da pasta `.docker` e de todos os seus arquivos para o usuário atual. Isso garante que você tenha as permissões necessárias para manipular os arquivos dentro da pasta `.docker`.
+  
+- **chmod +x .docker/entrypoint.sh**: Este comando concede permissão de execução para o script `entrypoint.sh`. Isso é necessário para que o script possa ser executado corretamente ao iniciar o contêiner.
+
+## 2. Subindo a Aplicação e Banco de dados com Docker Compose
+
+Após ajustar as permissões, você pode subir a aplicação com o Docker Compose. Execute o seguinte comando:
 
 ```bash
-# development
-$ yarn run start
-
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+docker-compose up
 ```
 
-## Test
+- **docker-compose up**: Este comando inicia os serviços definidos no arquivo `docker-compose.yml`. Ele cria e inicia os contêineres conforme especificado na configuração, e mantém os logs em tempo real visíveis no terminal.
 
-```bash
-# unit tests
-$ yarn run test
+Após a execução desses comandos, a aplicação estará rodando em contêineres Docker, pronta para ser acessada conforme configurado.
 
-# e2e tests
-$ yarn run test:e2e
+# Url Shortener - Postman Collection
 
-# test coverage
-$ yarn run test:cov
-```
+## Descrição
+  A collection do projeto se encontra na raiz do projeto com o nome "url_shortener.postman_collection.json". A mesma inclui endpoints para autenticação de usuário, criação, consulta, atualização e exclusão de URLs encurtadas, além do endpoint que irá redirecionar o usuário para a url original(não encurtada).
 
-## Support
+## Variáveis de Ambiente
+- **API_URL**: URL base da API (padrão: `http://localhost:3050`)
+- **AUTH_TOKEN**: Token de autenticação, que será preenchido automaticamente após a execução do endpoint de login.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Endpoints
 
-## Stay in touch
+### 1. **Auth**
+#### 1.1. Login
+- **Método**: `POST`
+- **URL**: `{{API_URL}}/auth/sign-in`
+- **Corpo da Requisição**:
+  ```json
+  {
+      "email": "teste_email@gmail.com",
+      "password": "test"
+  }
+  ```
+- **Descrição**: Este endpoint realiza a autenticação do usuário. O token de autenticação retornado é armazenado na variável `AUTH_TOKEN` da coleção.
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+#### 1.2. Create
+- **Método**: `POST`
+- **URL**: `{{API_URL}}/auth/add-user`
+- **Corpo da Requisição**:
+  ```json
+  {
+      "name": "teste",
+      "email": "teste_email@gmail.com",
+      "password": "test"
+  }
+  ```
+- **Descrição**: Este endpoint cria um novo usuário.
 
-## License
+### 2. **Url Shortener**
+#### 2.1. Create
+- **Método**: `POST`
+- **URL**: `{{API_URL}}/url-shortener`
+- **Corpo da Requisição**:
+  ```json
+  {
+      "url": "https://stackoverflow.com/questions/66335078/url-input-validation-nestjs"
+  }
+  ```
+- **Descrição**: Este endpoint cria um URL encurtado para a URL fornecida.
 
-Nest is [MIT licensed](LICENSE).
+#### 2.2. Find All
+- **Método**: `GET`
+- **URL**: `{{API_URL}}/url-shortener`
+- **Descrição**: Este endpoint retorna todas as URLs encurtadas cadastradas pelo usuário logado.
+- **🔴 Observação**: Caso não esteja logado, não será possível realizar a requisição com sucesso. O status 401 será retornado.
+
+
+#### 2.3. Acess Url
+- **Método**: `GET`
+- **URL**: `http://localhost:3050/T1-LGx`
+- **Descrição**: Este endpoint acessa uma URL encurtada específica, redirecionando para a URL original. Basta adicionar um encurtador criado anteriormente, estando logado ou nao.
+
+#### 2.4. Update
+- **Método**: `PUT`
+- **URL**: `{{API_URL}}/url-shortener/10`
+- **Corpo da Requisição**:
+  ```json
+  {
+      "newUrl": "https://www.google.com/search?q=translate&oq=tra&aqs=chrome.0.69i59j69i57j69i61l2.534j0j4&sourceid=chrome&ie=UTF-8"
+  }
+  ```
+- **Descrição**: Este endpoint atualiza a URL original associada a uma URL encurtada cadastrada pelo usuário logado, caso ela exista e pertença ao mesmo.
+- **🔴 Observação**: Caso não esteja logado, não será possível realizar a requisição com sucesso. O status 401 será retornado.
+
+#### 2.5. Remove
+- **Método**: `DELETE`
+- **URL**: `{{API_URL}}/url-shortener/10`
+- **Descrição**: Este endpoint remove uma URL encurtada específica cadastrada pelo usuário logado, caso ela exista e pertença ao mesmo.
+- **🔴 Observação**: Caso não esteja logado, não será possível realizar a requisição com sucesso. O status 401 será retornado.
+
+## Execução dos Testes
+Após realizar o login, o token de autenticação será armazenado automaticamente na variável `AUTH_TOKEN`. Todos os endpoints da coleção que requerem autenticação utilizarão este token para autorizar as requisições subsequentes.
+
+## Observações
+- Certifique-se de atualizar as variáveis de ambiente conforme necessário para executar a coleção em diferentes ambientes (por exemplo, desenvolvimento, produção).
+- O token de autenticação deve ser renovado periodicamente ao executar o endpoint de login.

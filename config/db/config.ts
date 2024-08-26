@@ -1,5 +1,6 @@
 export default () => ({
   portApp: process.env.PORT_APLICATION || 3000,
+  urlApp: process.env.URL_APLICATION,
   secretKey: process.env.SECRET_KEY,
   durationToken: process.env.DURATION_TOKEN,
   salt: process.env.PASS_SALT,
